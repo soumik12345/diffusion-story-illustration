@@ -1,4 +1,4 @@
-# Diffusion Story Illustration
+# Diffusion Story Illustration [WIP]
 
 ## Sample Workflow
 
@@ -31,5 +31,4 @@ enities = prompt_generation_model.predict(
     story=story,
     metadata=metadata,
 )
-
 ```
