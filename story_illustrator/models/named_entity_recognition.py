@@ -1,17 +1,33 @@
-from typing import Optional
+from typing import List
 
 import weave
-from span_marker import SpanMarkerModel
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+
+class NameModel(BaseModel):
+    character_names: List[str]
 
 
 class NERModel(weave.Model):
-    pretrained_model_address: str
-    _pipeline: SpanMarkerModel = None
-    
-    def __init__(self, pretrained_model_address: str):
-        super().__init__(pretrained_model_address=pretrained_model_address)
-        self._pipeline = SpanMarkerModel.from_pretrained(pretrained_model_address)
-    
+    openai_model: str
+    _llm_client: instructor.Instructor = None
+
+    def __init__(self, openai_model: str):
+        super().__init__(openai_model=openai_model)
+        self._llm_client = instructor.from_openai(OpenAI())
+
     @weave.op()
-    def predict(self, text: str) -> Optional[str]:
-        return self._pipeline.predict(text)
+    def predict(self, text: str) -> NameModel:
+        return self._llm_client.chat.completions.create(
+            model=self.openai_model,
+            response_model=NameModel,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant meant to extract a list of names of characters from a paragraph in a story.",
+                },
+                {"role": "user", "content": text},
+            ],
+        )
