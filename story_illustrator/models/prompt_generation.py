@@ -7,7 +7,7 @@ from .named_entity_recognition import NERModel
 from .character_profiler import CharacterProfiler
 
 
-class TextToImagePromptGenerator(weave.Model):
+class InContextTextToImagePromptGenerator(weave.Model):
     openai_model: str
     ner_model: NERModel
     character_profiler_model: CharacterProfiler
