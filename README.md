@@ -3,34 +3,27 @@
 ## Sample Workflow
 
 ```python
-import json
 import weave
-from story_illustrator.models import (
-    CharacterProfiler,
-    NERModel,
-    TextToImagePromptGenerator,
-)
+from story_illustrator.models import StoryIllustrator
 
 
 weave.init(project_name="story-illustration")
 
-ner_model = NERModel(openai_model="gpt-4")
-character_profiler_model = CharacterProfiler(openai_model="gpt-4")
-prompt_generation_model = TextToImagePromptGenerator(
+story_illustrator = StoryIllustrator(
     openai_model="gpt-4",
-    ner_model=ner_model,
-    character_profiler_model=character_profiler_model,
+    diffusion_model_address="black-forest-labs/FLUX.1-dev",
+    enable_cpu_offoad=False,
 )
-
 with open("./data/gift_of_the_magi.txt", "r") as f:
     story = f.read()
-enities = prompt_generation_model.predict(
-    paragraph="""ONE DOLLAR AND eighty-seven cents. That was all. And sixty cents of it was in pennies. Pennies saved one and two at a time by bulldozing the grocer and the vegetable man and the butcher until one's cheeks burned with the silent imputation of parsimony that such close dealing implied. Three times Della counted it. One dollar and eighty-seven cents. And the next day would be Christmas.""",
+paragraphs = story.split("\n\n")
+story_illustrator.predict(
     story=story,
     metadata={
         "title": "Gift of the Magi",
         "author": "O. Henry",
         "setting": "the year 1905, New York City, United States of America",
     },
+    paragraphs=paragraphs[:2],
 )
 ```
