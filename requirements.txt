@@ -1,5 +1,6 @@
 accelerate>=0.33.0
 diffusers>=0.30.0
+fire>=0.6.0
 instructor>=1.4.0
 openai>=1.42.0
 transformers>=4.44.2
