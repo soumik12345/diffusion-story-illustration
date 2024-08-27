@@ -9,6 +9,7 @@ from .character_profiler import CharacterProfiler
 
 class InContextTextToImagePromptGenerator(weave.Model):
     openai_model: str
+    llm_seed: int
     ner_model: NERModel
     character_profiler_model: CharacterProfiler
     _llm_client: OpenAI = None
@@ -16,11 +17,13 @@ class InContextTextToImagePromptGenerator(weave.Model):
     def __init__(
         self,
         openai_model: str,
+        llm_seed: int,
         ner_model: NERModel,
         character_profiler_model: CharacterProfiler,
     ):
         super().__init__(
             openai_model=openai_model,
+            llm_seed=llm_seed,
             ner_model=ner_model,
             character_profiler_model=character_profiler_model,
         )
@@ -106,6 +109,7 @@ Story:
         return (
             self._llm_client.chat.completions.create(
                 model=self.openai_model,
+                seed=self.llm_seed,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},

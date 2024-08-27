@@ -12,10 +12,11 @@ class NameModel(BaseModel):
 
 class NERModel(weave.Model):
     openai_model: str
+    llm_seed: int
     _llm_client: instructor.Instructor = None
 
-    def __init__(self, openai_model: str):
-        super().__init__(openai_model=openai_model)
+    def __init__(self, openai_model: str, llm_seed: int):
+        super().__init__(openai_model=openai_model, llm_seed=llm_seed)
         self._llm_client = instructor.from_openai(OpenAI())
 
     @weave.op()
@@ -23,6 +24,7 @@ class NERModel(weave.Model):
         return self._llm_client.chat.completions.create(
             model=self.openai_model,
             response_model=NameModel,
+            seed=self.llm_seed,
             messages=[
                 {
                     "role": "system",

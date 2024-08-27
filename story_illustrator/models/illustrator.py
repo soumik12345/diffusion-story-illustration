@@ -1,5 +1,7 @@
+import random
 from typing import Any, Dict, List, Optional, Union
 
+import numpy as np
 import weave
 from tqdm.auto import tqdm
 
@@ -13,23 +15,37 @@ class StoryIllustrator(weave.Model):
     openai_model: str
     diffusion_model_address: str
     enable_cpu_offoad: bool
+    llm_seed: Optional[int]
     ner_model: NERModel = None
     character_profiler_model: CharacterProfiler = None
     prompt_generation_model: InContextTextToImagePromptGenerator = None
     text_to_image_model: TextToImageGenerationModel = None
 
     def __init__(
-        self, openai_model: str, diffusion_model_address: str, enable_cpu_offoad: bool
+        self,
+        openai_model: str,
+        diffusion_model_address: str,
+        enable_cpu_offoad: bool,
+        llm_seed: Optional[int] = None,
     ):
         super().__init__(
             openai_model=openai_model,
             diffusion_model_address=diffusion_model_address,
             enable_cpu_offoad=enable_cpu_offoad,
+            llm_seed=llm_seed,
         )
-        self.ner_model = NERModel(openai_model=openai_model)
-        self.character_profiler_model = CharacterProfiler(openai_model=openai_model)
+        self.llm_seed = (
+            random.randint(0, np.iinfo(np.int32).max)
+            if self.llm_seed is None
+            else self.llm_seed
+        )
+        self.ner_model = NERModel(openai_model=openai_model, llm_seed=self.llm_seed)
+        self.character_profiler_model = CharacterProfiler(
+            openai_model=openai_model, llm_seed=self.llm_seed
+        )
         self.prompt_generation_model = InContextTextToImagePromptGenerator(
             openai_model=openai_model,
+            llm_seed=self.llm_seed,
             ner_model=self.ner_model,
             character_profiler_model=self.character_profiler_model,
         )
