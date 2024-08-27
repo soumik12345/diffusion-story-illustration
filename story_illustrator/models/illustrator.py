@@ -43,6 +43,7 @@ class StoryIllustrator(weave.Model):
         story: str,
         metadata: Dict[str, Any],
         paragraphs: Optional[Union[str, List[str]]] = None,
+        illustration_style: Optional[str] = None,
         image_width: int = 1024,
         image_height: int = 1024,
         image_generation_guidance_scale: float = 5.0,
@@ -50,6 +51,7 @@ class StoryIllustrator(weave.Model):
         image_generation_seed: Optional[int] = None,
     ) -> List[str]:
         paragraphs = [paragraphs] if isinstance(paragraphs, str) else paragraphs
+        illustration_style = "" if illustration_style is None else illustration_style
         images = []
         for paragraph in tqdm(paragraphs, desc="Illustrating story"):
             summary = self.prompt_generation_model.predict(
@@ -59,7 +61,7 @@ class StoryIllustrator(weave.Model):
             )
             images.append(
                 self.text_to_image_model.predict(
-                    prompt=summary,
+                    prompt=summary + f" {illustration_style}",
                     width=image_width,
                     height=image_height,
                     guidance_scale=image_generation_guidance_scale,

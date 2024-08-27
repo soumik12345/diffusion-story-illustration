@@ -24,6 +24,7 @@ story_illustrator.predict(
         "author": "O. Henry",
         "setting": "the year 1905, New York City, United States of America",
     },
-    paragraphs=paragraphs[:2],
+    paragraphs=paragraphs[:10],
+    illustration_style="surreal style, artstation, digital art, illustration",
 )
 ```
