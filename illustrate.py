@@ -4,7 +4,7 @@ import weave
 from story_illustrator.models import StoryIllustrator
 
 
-@weave.op()
+# @weave.op()
 def illustrate(
     story_text_path: str,
     story_title: str,
@@ -26,18 +26,17 @@ def illustrate(
     with open(story_text_path, "r") as f:
         story = f.read()
     paragraphs = story.split("\n\n")
-    for idx in range(10):
-        story_illustrator.predict(
-            story=story,
-            metadata={
-                "title": story_title,
-                "author": story_author,
-                "setting": story_setting,
-            },
-            paragraphs=paragraphs[idx],
-            illustration_style=illustration_style,
-            use_text_encoder_2=use_text_encoder_2,
-        )
+    story_illustrator.predict(
+        story=story,
+        metadata={
+            "title": story_title,
+            "author": story_author,
+            "setting": story_setting,
+        },
+        paragraphs=paragraphs[:10],
+        illustration_style=illustration_style,
+        use_text_encoder_2=use_text_encoder_2,
+    )
 
 
 if __name__ == "__main__":

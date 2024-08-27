@@ -5,8 +5,7 @@ import numpy as np
 import torch
 import weave
 from diffusers import DiffusionPipeline
-
-from .utils import base64_encode_image
+from PIL import Image
 
 
 class TextToImageGenerationModel(weave.Model):
@@ -38,19 +37,17 @@ class TextToImageGenerationModel(weave.Model):
         num_inference_steps: int,
         use_text_encoder_2: bool = False,
         seed: Optional[int] = None,
-    ) -> str:
+    ) -> Image.Image:
         generator = torch.Generator().manual_seed(seed)
-        return base64_encode_image(
-            self._pipeline(
-                prompt="" if use_text_encoder_2 else prompt,
-                prompt_2=prompt if use_text_encoder_2 else None,
-                width=width,
-                height=height,
-                guidance_scale=guidance_scale,
-                num_inference_steps=num_inference_steps,
-                generator=generator,
-            ).images[0]
-        )
+        return self._pipeline(
+            prompt="" if use_text_encoder_2 else prompt,
+            prompt_2=prompt if use_text_encoder_2 else None,
+            width=width,
+            height=height,
+            guidance_scale=guidance_scale,
+            num_inference_steps=num_inference_steps,
+            generator=generator,
+        ).images[0]
 
     @weave.op()
     def predict(
@@ -62,7 +59,7 @@ class TextToImageGenerationModel(weave.Model):
         num_inference_steps: int = 28,
         use_text_encoder_2: bool = False,
         seed: Optional[int] = None,
-    ) -> str:
+    ) -> Image.Image:
         seed = random.randint(0, np.iinfo(np.int32).max)
         return self.generate_image(
             prompt,
