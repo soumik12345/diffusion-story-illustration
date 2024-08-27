@@ -15,6 +15,7 @@ def illustrate(
     diffusion_model_address: str = "black-forest-labs/FLUX.1-dev",
     enable_cpu_offoad: bool = False,
     illustration_style: Optional[str] = None,
+    use_text_encoder_2: bool = False,
 ):
     story_illustrator = StoryIllustrator(
         openai_model=openai_model,
@@ -35,6 +36,7 @@ def illustrate(
             },
             paragraphs=paragraphs[idx],
             illustration_style=illustration_style,
+            use_text_encoder_2=use_text_encoder_2,
         )
 
 

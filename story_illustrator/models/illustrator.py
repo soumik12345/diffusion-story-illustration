@@ -64,6 +64,7 @@ class StoryIllustrator(weave.Model):
         image_height: int = 1024,
         image_generation_guidance_scale: float = 5.0,
         image_generation_num_inference_steps: int = 28,
+        use_text_encoder_2: bool = False,
         image_generation_seed: Optional[int] = None,
     ) -> List[str]:
         paragraphs = [paragraphs] if isinstance(paragraphs, str) else paragraphs
@@ -82,6 +83,7 @@ class StoryIllustrator(weave.Model):
                     height=image_height,
                     guidance_scale=image_generation_guidance_scale,
                     num_inference_steps=image_generation_num_inference_steps,
+                    use_text_encoder_2=use_text_encoder_2,
                     seed=image_generation_seed,
                 )
             )

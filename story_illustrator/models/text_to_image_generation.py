@@ -36,12 +36,14 @@ class TextToImageGenerationModel(weave.Model):
         height: int,
         guidance_scale: float,
         num_inference_steps: int,
+        use_text_encoder_2: bool = False,
         seed: Optional[int] = None,
     ) -> str:
         generator = torch.Generator().manual_seed(seed)
         return base64_encode_image(
             self._pipeline(
-                prompt=prompt,
+                prompt="" if use_text_encoder_2 else prompt,
+                prompt_2=prompt if use_text_encoder_2 else None,
                 width=width,
                 height=height,
                 guidance_scale=guidance_scale,
@@ -58,9 +60,16 @@ class TextToImageGenerationModel(weave.Model):
         height: int = 1024,
         guidance_scale: float = 5.0,
         num_inference_steps: int = 28,
+        use_text_encoder_2: bool = False,
         seed: Optional[int] = None,
     ) -> str:
         seed = random.randint(0, np.iinfo(np.int32).max)
         return self.generate_image(
-            prompt, width, height, guidance_scale, num_inference_steps, seed
+            prompt,
+            width,
+            height,
+            guidance_scale,
+            num_inference_steps,
+            use_text_encoder_2,
+            seed,
         )
