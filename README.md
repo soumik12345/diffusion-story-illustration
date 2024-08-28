@@ -2,6 +2,8 @@
 
 This repository demonstrates a simple LLM-assisted workflow to illustrate paragraphs from short stories automatically using a text-to-image generation model. Although we use [GPT-4](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4) as the LLM and [FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev) for generating the illustrations, the architecture is meant to be model-agnostic, i.e, the LLM calls and image generation models can be replaced with other models or services with similar capabilities.
 
+You can read the blog post [Building a GenAI-assisted Automatic Story Illustrator](https://wandb.ai/geekyrakshit/story-illustration/reports/Building-a-GenAI-assisted-Automatic-Story-Illustrator--Vmlldzo5MTYxNTkw) to learn more about the architecture and shrtcomings of the current system and possible ways to improve it.
+
 ## Results
 
 We used the automatic illustration workflow to illustrate the first ten paragraphs of the story [The Gift of the Magi](https://americanenglish.state.gov/files/ae/resource_files/1-the_gift_of_the_magi_0.pdf) by [O. Henry](https://en.wikipedia.org/wiki/O._Henry). Here are a few samples:
