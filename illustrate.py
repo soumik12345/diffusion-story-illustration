@@ -1,6 +1,8 @@
 from typing import Optional
+
 import fire
 import weave
+
 from story_illustrator.models import StoryIllustrator
 
 

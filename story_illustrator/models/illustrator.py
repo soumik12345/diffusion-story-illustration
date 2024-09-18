@@ -7,8 +7,8 @@ from tqdm.auto import tqdm
 
 from .character_profiler import CharacterProfiler
 from .named_entity_recognition import NERModel
-from .text_to_image_generation import TextToImageGenerationModel
 from .prompt_generation import InContextTextToImagePromptGenerator
+from .text_to_image_generation import DiffusersTextToImageGenerationModel
 
 
 class StoryIllustrator(weave.Model):
@@ -19,7 +19,7 @@ class StoryIllustrator(weave.Model):
     ner_model: NERModel = None
     character_profiler_model: CharacterProfiler = None
     prompt_generation_model: InContextTextToImagePromptGenerator = None
-    text_to_image_model: TextToImageGenerationModel = None
+    text_to_image_model: DiffusersTextToImageGenerationModel = None
 
     def __init__(
         self,
@@ -49,7 +49,7 @@ class StoryIllustrator(weave.Model):
             ner_model=self.ner_model,
             character_profiler_model=self.character_profiler_model,
         )
-        self.text_to_image_model = TextToImageGenerationModel(
+        self.text_to_image_model = DiffusersTextToImageGenerationModel(
             model_address=diffusion_model_address, enable_cpu_offoad=enable_cpu_offoad
         )
 

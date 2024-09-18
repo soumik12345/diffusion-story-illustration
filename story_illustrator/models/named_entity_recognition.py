@@ -1,7 +1,7 @@
 from typing import List
 
-import weave
 import instructor
+import weave
 from openai import OpenAI
 from pydantic import BaseModel
 

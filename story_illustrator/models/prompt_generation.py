@@ -3,8 +3,8 @@ from typing import Any, Dict
 import weave
 from openai import OpenAI
 
-from .named_entity_recognition import NERModel
 from .character_profiler import CharacterProfiler
+from .named_entity_recognition import NERModel
 
 
 class InContextTextToImagePromptGenerator(weave.Model):
