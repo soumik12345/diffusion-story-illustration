@@ -3,10 +3,12 @@ from typing import Optional
 import fire
 import weave
 
-from story_illustrator.models import StoryIllustrator
+from story_illustrator.models import (
+    DiffusersTextToImageGenerationModel,
+    StoryIllustrator,
+)
 
 
-# @weave.op()
 def illustrate(
     story_text_path: str,
     story_title: str,
@@ -22,8 +24,9 @@ def illustrate(
     story_illustrator = StoryIllustrator(
         openai_model=openai_model,
         llm_seed=llm_seed,
-        diffusion_model_address=diffusion_model_address,
-        enable_cpu_offoad=enable_cpu_offoad,
+        text_to_image_model=DiffusersTextToImageGenerationModel(
+            model_address=diffusion_model_address, enable_cpu_offoad=enable_cpu_offoad
+        ),
     )
     with open(story_text_path, "r") as f:
         story = f.read()
