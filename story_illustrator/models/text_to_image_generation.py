@@ -85,6 +85,7 @@ class FalAITextToImageGenerationModel(weave.Model):
         prompt: str,
         image_size: Union[Tuple[int, int], str],
         num_inference_steps: int,
+        guidance_scale: float,
         seed: int,
         safety_tolerance: int,
     ) -> Image.Image:
@@ -95,6 +96,7 @@ class FalAITextToImageGenerationModel(weave.Model):
                     "prompt": prompt,
                     "image_size": image_size,
                     "num_inference_steps": num_inference_steps,
+                    "guidance_scale": guidance_scale,
                     "seed": seed,
                     "sync_mode": True,
                     "num_images": 1,
@@ -110,6 +112,7 @@ class FalAITextToImageGenerationModel(weave.Model):
         prompt: str,
         image_size: str = "square",
         num_inference_steps: int = 28,
+        guidance_scale: float = 3.5,
         seed: Optional[int] = None,
         safety_tolerance: int = 2,
     ) -> Image.Image:
@@ -130,6 +133,7 @@ class FalAITextToImageGenerationModel(weave.Model):
             prompt=prompt,
             image_size=image_size,
             num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
             seed=seed,
             safety_tolerance=safety_tolerance,
         )
