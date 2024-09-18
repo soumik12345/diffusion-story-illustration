@@ -116,18 +116,7 @@ class FalAITextToImageGenerationModel(weave.Model):
         seed: Optional[int] = None,
         safety_tolerance: int = 2,
     ) -> Image.Image:
-        assert (
-            image_size
-            in [
-                "square_hd",
-                "square",
-                "portrait_4_3",
-                "portrait_16_9",
-                "landscape_4_3",
-                "landscape_16_9",
-            ]
-            and 0 < safety_tolerance < 7
-        )
+        assert 0 < safety_tolerance < 7
         seed = random.randint(0, np.iinfo(np.int32).max) if seed is None else seed
         return self.generate_image(
             prompt=prompt,
