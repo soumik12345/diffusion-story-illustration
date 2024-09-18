@@ -2,8 +2,8 @@ from typing import Dict
 
 import instructor
 import weave
-from pydantic import BaseModel
 from openai import OpenAI
+from pydantic import BaseModel
 
 
 class CharacterProfile(BaseModel):

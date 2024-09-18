@@ -1,14 +1,18 @@
 import random
-from typing import Optional
+from typing import Optional, Tuple, Union
 
+import fal_client
 import numpy as np
 import torch
 import weave
 from diffusers import DiffusionPipeline
+from diffusers.utils.loading_utils import load_image
 from PIL import Image
 
+from ..utils import custom_weave_wrapper
 
-class TextToImageGenerationModel(weave.Model):
+
+class DiffusersTextToImageGenerationModel(weave.Model):
     model_address: str
     enable_cpu_offoad: bool
     _pipeline: DiffusionPipeline = None
@@ -60,7 +64,7 @@ class TextToImageGenerationModel(weave.Model):
         use_text_encoder_2: bool = False,
         seed: Optional[int] = None,
     ) -> Image.Image:
-        seed = random.randint(0, np.iinfo(np.int32).max)
+        seed = random.randint(0, np.iinfo(np.int32).max) if seed is None else seed
         return self.generate_image(
             prompt,
             width,
@@ -69,4 +73,56 @@ class TextToImageGenerationModel(weave.Model):
             num_inference_steps,
             use_text_encoder_2,
             seed,
+        )
+
+
+class FalAITextToImageGenerationModel(weave.Model):
+    model_address: str
+
+    @weave.op()
+    def generate_image(
+        self,
+        prompt: str,
+        image_size: Union[Tuple[int, int], str],
+        num_inference_steps: int,
+        guidance_scale: float,
+        seed: int,
+        safety_tolerance: int,
+    ) -> Image.Image:
+        result = custom_weave_wrapper(name="fal_client.submit.get")(
+            fal_client.submit(
+                self.model_address,
+                arguments={
+                    "prompt": prompt,
+                    "image_size": image_size,
+                    "num_inference_steps": num_inference_steps,
+                    "guidance_scale": guidance_scale,
+                    "seed": seed,
+                    "sync_mode": True,
+                    "num_images": 1,
+                    "safety_tolerance": str(safety_tolerance),
+                },
+            ).get
+        )()
+        return load_image(result["images"][0]["url"])
+
+    @weave.op()
+    def predict(
+        self,
+        prompt: str,
+        image_size: str = "square",
+        num_inference_steps: int = 28,
+        guidance_scale: float = 3.5,
+        seed: Optional[int] = None,
+        safety_tolerance: int = 2,
+    ) -> Image.Image:
+        assert 0 < safety_tolerance < 7
+        seed = random.randint(0, np.iinfo(np.int32).max) if seed is None else seed
+        return self.generate_image(
+            prompt=prompt,
+            image_size=image_size,
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+            seed=seed,
+            safety_tolerance=safety_tolerance,
         )

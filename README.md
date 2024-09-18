@@ -18,20 +18,27 @@ We used the automatic illustration workflow to illustrate the first ten paragrap
 
 ## Illustrtaing Your own Stories
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wandb/diffusion-story-illustration/blob/main/illustrate.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wandb/diffusion-story-illustration/blob/main/examples/illustrate.ipynb)
+
+To proceed with using the workflow, you would need
+
+- an OpenAI API key which you can get by [signing up](https://platform.openai.com/signup) on the OpenAI platform.
+- optionally a [FalAI API key](https://fal.ai/) which you can get by [signing up](https://fal.ai/dashboard/keys) on the FalAI platform. You can also choose to use [HuggingFace Diffusers](https://huggingface.co/docs/diffusers/en/index) if you chose to use your own hardware for for generating the images using `DiffusersTextToImageGenerationModel` instead of `FalAITextToImageGenerationModel`.
 
 ```python
 import weave
-from story_illustrator.models import StoryIllustrator
+from story_illustrator.models import StoryIllustrator, FalAITextToImageGenerationModel
 
 
 weave.init(project_name="story-illustration")
 
 story_illustrator = StoryIllustrator(
     openai_model="gpt-4",
-    diffusion_model_address="black-forest-labs/FLUX.1-dev",
-    enable_cpu_offoad=False,
+    text_to_image_model=FalAITextToImageGenerationModel(
+        model_address="fal-ai/flux-pro"
+    ),
 )
+
 with open("./data/gift_of_the_magi.txt", "r") as f:
     story = f.read()
 paragraphs = story.split("\n\n")

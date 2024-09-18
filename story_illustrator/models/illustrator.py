@@ -1,37 +1,37 @@
 import random
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import weave
+from PIL import Image
 from tqdm.auto import tqdm
 
 from .character_profiler import CharacterProfiler
 from .named_entity_recognition import NERModel
-from .text_to_image_generation import TextToImageGenerationModel
 from .prompt_generation import InContextTextToImagePromptGenerator
+from .text_to_image_generation import (
+    DiffusersTextToImageGenerationModel,
+    FalAITextToImageGenerationModel,
+)
 
 
 class StoryIllustrator(weave.Model):
     openai_model: str
-    diffusion_model_address: str
-    enable_cpu_offoad: bool
     llm_seed: Optional[int]
+    text_to_image_model: Optional[weave.Model]
     ner_model: NERModel = None
     character_profiler_model: CharacterProfiler = None
     prompt_generation_model: InContextTextToImagePromptGenerator = None
-    text_to_image_model: TextToImageGenerationModel = None
 
     def __init__(
         self,
         openai_model: str,
-        diffusion_model_address: str,
-        enable_cpu_offoad: bool,
+        text_to_image_model: Optional[weave.Model] = None,
         llm_seed: Optional[int] = None,
     ):
         super().__init__(
             openai_model=openai_model,
-            diffusion_model_address=diffusion_model_address,
-            enable_cpu_offoad=enable_cpu_offoad,
+            text_to_image_model=text_to_image_model,
             llm_seed=llm_seed,
         )
         self.llm_seed = (
@@ -49,8 +49,12 @@ class StoryIllustrator(weave.Model):
             ner_model=self.ner_model,
             character_profiler_model=self.character_profiler_model,
         )
-        self.text_to_image_model = TextToImageGenerationModel(
-            model_address=diffusion_model_address, enable_cpu_offoad=enable_cpu_offoad
+        self.text_to_image_model = (
+            DiffusersTextToImageGenerationModel(
+                model_address="black-forest-labs/FLUX.1-dev", enable_cpu_offoad=True
+            )
+            if self.text_to_image_model is None
+            else self.text_to_image_model
         )
 
     @weave.op()
@@ -60,12 +64,12 @@ class StoryIllustrator(weave.Model):
         metadata: Dict[str, Any],
         paragraphs: Optional[Union[str, List[str]]] = None,
         illustration_style: Optional[str] = None,
-        image_width: int = 1024,
-        image_height: int = 1024,
+        image_size: Union[Tuple[int, int], str] = (1024, 1024),
         image_generation_guidance_scale: float = 5.0,
         image_generation_num_inference_steps: int = 28,
         use_text_encoder_2: bool = False,
         image_generation_seed: Optional[int] = None,
+        **kwargs,
     ) -> List[str]:
         paragraphs = [paragraphs] if isinstance(paragraphs, str) else paragraphs
         illustration_style = "" if illustration_style is None else illustration_style
@@ -76,8 +80,13 @@ class StoryIllustrator(weave.Model):
                 story=story,
                 metadata=metadata,
             )
-            images.append(
-                self.text_to_image_model.predict(
+            image: Image.Image = None
+            if isinstance(
+                self.text_to_image_model, DiffusersTextToImageGenerationModel
+            ):
+                assert isinstance(image_size, tuple)
+                image_height, image_width = image_size
+                image = self.text_to_image_model.predict(
                     prompt=summary + f" {illustration_style}",
                     width=image_width,
                     height=image_height,
@@ -86,5 +95,15 @@ class StoryIllustrator(weave.Model):
                     use_text_encoder_2=use_text_encoder_2,
                     seed=image_generation_seed,
                 )
-            )
+            elif isinstance(self.text_to_image_model, FalAITextToImageGenerationModel):
+                assert isinstance(image_size, str)
+                image = self.text_to_image_model.predict(
+                    prompt=summary + f" {illustration_style}",
+                    image_size=image_size,
+                    num_inference_steps=image_generation_num_inference_steps,
+                    guidance_scale=image_generation_guidance_scale,
+                    seed=image_generation_seed,
+                    **kwargs,
+                )
+            images.append(image)
         return images
