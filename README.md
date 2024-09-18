@@ -18,7 +18,7 @@ We used the automatic illustration workflow to illustrate the first ten paragrap
 
 ## Illustrtaing Your own Stories
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wandb/diffusion-story-illustration/blob/main/illustrate.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wandb/diffusion-story-illustration/blob/main/examples/illustrate.ipynb)
 
 ```python
 import weave
