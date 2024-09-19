@@ -18,7 +18,7 @@ We used the automatic illustration workflow to illustrate the first ten paragrap
 
 ## Illustrtaing Your own Stories
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wandb/diffusion-story-illustration/blob/main/examples/illustrate.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/soumik12345/diffusion-story-illustration/blob/main/examples/illustrate.ipynb)
 
 To proceed with using the workflow, you would need
 
