@@ -1,6 +1,6 @@
 # GenAI-assisted Automatic Story Illustrator
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/soumik12345/diffusion-story-illustration/blob/main/examples/hosted_illustrate.ipynb)
+Illustrate you stories for free: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/soumik12345/diffusion-story-illustration/blob/main/examples/hosted_illustrate.ipynb)
 
 This repository demonstrates a simple LLM-assisted workflow to illustrate paragraphs from short stories automatically using a text-to-image generation model. Although we use [GPT-4](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4) as the LLM and [FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev) for generating the illustrations, the architecture is meant to be model-agnostic, i.e, the LLM calls and image generation models can be replaced with other models or services with similar capabilities.
 
