@@ -12,4 +12,11 @@ setup(
     ],
     python_requires=">=3.6",
     install_requires=open("requirements.txt").read().splitlines(),
+    extras_require={
+        "fal": [
+            "fal-client>=0.4.1",
+            "openai>=1.42.0",
+            "weave>=0.51.7",
+        ],
+    },
 )
